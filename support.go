@@ -10,3 +10,20 @@ func GetIpsum(paragraphs int) []byte {
 	}
 	return []byte(output)
 }
+
+// Subdivide takes a generic slice and subdivides it into sub-slices up to the provided width.
+func Subdivide[T any](width int, data []T) [][]T {
+	output := make([][]T, 0, (len(data)+width-1)/width)
+	if width <= 0 {
+		return output
+	}
+
+	for i := 0; i < len(data); i += width {
+		if i+width > len(data) {
+			output = append(output, data[i:])
+		} else {
+			output = append(output, data[i:i+width])
+		}
+	}
+	return output
+}
