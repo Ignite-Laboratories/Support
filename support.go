@@ -13,6 +13,22 @@ func GetIpsum(paragraphs int) []byte {
 	return []byte(output)
 }
 
+// Max takes two integers and returns which is greater than the other.
+func Max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+// Min takes two integers and returns which is smaller than the other.
+func Min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
+}
+
 // Subdivide takes a generic slice and subdivides it into sub-slices up to the provided width.
 func Subdivide[T any](width int, data []T) [][]T {
 	output := make([][]T, 0, (len(data)+width-1)/width)
