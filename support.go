@@ -1,16 +1,18 @@
 package support
 
 import "sync"
+import "golang.org/x/exp/constraints"
 
-var Ipsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque imperdiet libero eu neque facilisis, ac pretium nisi dignissim. Integer nec odio. Praesent libero. Sed cursus ante dapibus diam. Sed nisi. Nulla quis sem at nibh elementum imperdiet. Duis sagittis ipsum. Praesent mauris. Fusce nec tellus sed augue semper porta. Mauris massa. Vestibulum lacinia arcu eget nulla.\n"
-
-// GetIpsum returns the provided number of paragraphs of 'Lorem ipsum' text in byte form.
-func GetIpsum(paragraphs int) []byte {
-	output := Ipsum
-	for i := 0; i < paragraphs; i++ {
-		output += Ipsum
+// GetAverage calculates the average of a slice of numeric values.
+func GetAverage[T constraints.Integer](data ...T) T {
+	if len(data) == 0 {
+		return 0
 	}
-	return []byte(output)
+	total := uint64(0)
+	for _, v := range data {
+		total += uint64(v)
+	}
+	return T(total / uint64(len(data)))
 }
 
 // Max takes two integers and returns which is greater than the other.
