@@ -1,35 +1,9 @@
 package support
 
-import "sync"
+import (
+	"sync"
+)
 import "golang.org/x/exp/constraints"
-
-// GetAverage calculates the average of a slice of numeric values.
-func GetAverage[T constraints.Integer](data ...T) T {
-	if len(data) == 0 {
-		return 0
-	}
-	total := uint64(0)
-	for _, v := range data {
-		total += uint64(v)
-	}
-	return T(total / uint64(len(data)))
-}
-
-// Max takes two integers and returns which is greater than the other.
-func Max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
-
-// Min takes two integers and returns which is smaller than the other.
-func Min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
-}
 
 // Subdivide takes a generic slice and subdivides it into sub-slices up to the provided width.
 func Subdivide[T any](width int, data []T) [][]T {
