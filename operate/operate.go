@@ -1,44 +1,52 @@
-package operation
+package operate
 
 import (
 	"golang.org/x/exp/constraints"
 	"log"
 )
 
-type Operation int
+// Operator is a type of mathematical operate to be applied to integers.
+type Operator int
 
 const (
-	Addition Operation = iota
-	Subtraction
-	Multiplication
+	// Add represents a+b
+	Add Operator = iota
+	// Subtract represents a-b
+	Subtract
+	// Multiply represents a*b
+	Multiply
+	// XOR represents a^b
 	XOR
-	And
-	Nand
-	Or
+	// AND represents a&b
+	AND
+	// NAND represents ^(a&b)
+	NAND
+	// OR represents a|b
+	OR
 )
 
-// OnEach applies the provided value using the passed operation for each member of the source data.
-// NOTE: As this does not handle floating point numbers gracefully, division is not a provided operation
+// OnEach applies the provided value using the passed operate for each member of the source slice of integers.
+// NOTE: As this does not handle floating point numbers gracefully, division is not a provided operate
 // to avoid blissfully unaware confusion.
-func OnEach[T constraints.Integer](data []T, value T, operation Operation) []T {
+func OnEach[T constraints.Integer](data []T, operation Operator, value T) []T {
 	op := func(a, b T) T {
 		switch operation {
-		case Addition:
+		case Add:
 			return a + b
-		case Subtraction:
+		case Subtract:
 			return a - b
-		case Multiplication:
+		case Multiply:
 			return a * b
 		case XOR:
 			return a ^ b
-		case And:
+		case AND:
 			return a & b
-		case Nand:
+		case NAND:
 			return ^(a & b)
-		case Or:
+		case OR:
 			return a | b
 		default:
-			log.Panicf("Invalid operation %v", operation)
+			log.Panicf("Invalid operate %v", operation)
 			return 0
 		}
 	}
@@ -48,7 +56,7 @@ func OnEach[T constraints.Integer](data []T, value T, operation Operation) []T {
 	return data
 }
 
-// GetAverage calculates the average of a slice of numeric values.
+// GetAverage calculates the average of a slice of integer values.
 func GetAverage[T constraints.Integer](data ...T) T {
 	if len(data) == 0 {
 		return 0
