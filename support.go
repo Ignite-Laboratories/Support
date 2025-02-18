@@ -3,7 +3,6 @@ package support
 import (
 	"sync"
 )
-import "golang.org/x/exp/constraints"
 
 // Subdivide takes a generic slice and subdivides it into sub-slices up to the provided width.
 func Subdivide[T any](width int, data []T) [][]T {

@@ -1,11 +1,11 @@
 package operate
 
 import (
+	"fmt"
 	"golang.org/x/exp/constraints"
-	"log"
 )
 
-// Operator is a type of mathematical operate to be applied to integers.
+// Operator is a type of mathematical operation to be applied to integers.
 type Operator int
 
 const (
@@ -15,6 +15,8 @@ const (
 	Subtract
 	// Multiply represents a*b
 	Multiply
+	// Divide represents a/b
+	Divide
 	// XOR represents a^b
 	XOR
 	// AND represents a&b
@@ -25,9 +27,8 @@ const (
 	OR
 )
 
-// OnEach applies the provided value using the passed operate for each member of the source slice of integers.
-// NOTE: As this does not handle floating point numbers gracefully, division is not a provided operate
-// to avoid blissfully unaware confusion.
+// OnEach applies the provided value using the passed operator for each member of the source integers.
+// NOTE: Division loses precision as we specifically only operate on integers here!
 func OnEach[T constraints.Integer](data []T, operation Operator, value T) []T {
 	op := func(a, b T) T {
 		switch operation {
@@ -36,6 +37,8 @@ func OnEach[T constraints.Integer](data []T, operation Operator, value T) []T {
 		case Subtract:
 			return a - b
 		case Multiply:
+			return a * b
+		case Divide:
 			return a * b
 		case XOR:
 			return a ^ b
@@ -46,7 +49,7 @@ func OnEach[T constraints.Integer](data []T, operation Operator, value T) []T {
 		case OR:
 			return a | b
 		default:
-			log.Panicf("Invalid operate %v", operation)
+			panic(fmt.Sprintf("Invalid operation: %v", operation))
 			return 0
 		}
 	}
