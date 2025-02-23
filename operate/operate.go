@@ -1,8 +1,10 @@
+// Package operate provides general purpose mathematical operations for the JanOS ecosystem.
 package operate
 
 import (
 	"fmt"
 	"github.com/ignite-laboratories/support/constraints"
+	"github.com/ignite-laboratories/tiny"
 )
 
 // Operator is a type of mathematical operation to be applied to integers.
@@ -62,10 +64,19 @@ func OnEach[T constraints.Integer](data []T, operation Operator, value T) []T {
 	return data
 }
 
+// GetMeasurementAverage calculates the average of a slice of tiny.Measurement values and returns the result.
+func GetMeasurementAverage(data ...tiny.Measurement) int {
+	var expanded []int
+	for _, v := range data {
+		expanded = append(expanded, v.Value())
+	}
+	return GetAverage(expanded...)
+}
+
 // GetAverage calculates the average of a slice of integer values and returns the result in the slice's type.
 func GetAverage[T constraints.Integer](data ...T) T {
 	if len(data) == 0 {
-		return 0
+		return T(0)
 	}
 	total := uint64(0)
 	for _, v := range data {

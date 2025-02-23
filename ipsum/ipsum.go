@@ -1,3 +1,4 @@
+// Package ipsum provides some convenience methods around creating strings of Lorem Ipsum.
 package ipsum
 
 // Paragraph represents one constant paragraph of Lorem Ipsum text.

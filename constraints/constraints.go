@@ -1,6 +1,9 @@
+// Package constraints provides a singular point for referencing 'Numeric' types beyond Integer and Float.
 package constraints
 
-import "golang.org/x/exp/constraints"
+import (
+	"golang.org/x/exp/constraints"
+)
 
 // Numeric represents any integer or floating-point type.
 type Numeric interface {
