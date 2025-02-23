@@ -1,8 +1,16 @@
 package support
 
 import (
+	"crypto/rand"
 	"sync"
 )
+
+// RandomBytes generates a slice of random bytes.
+func RandomBytes(length int) []byte {
+	bytes := make([]byte, length)
+	rand.Read(bytes)
+	return bytes
+}
 
 // Subdivide takes a generic slice and subdivides it into sub-slices up to the provided width.
 func Subdivide[T any](width int, data []T) [][]T {

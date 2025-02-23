@@ -2,7 +2,7 @@ package operate
 
 import (
 	"fmt"
-	"golang.org/x/exp/constraints"
+	"github.com/ignite-laboratories/support/constraints"
 )
 
 // Operator is a type of mathematical operation to be applied to integers.
@@ -28,7 +28,10 @@ const (
 )
 
 // OnEach applies the provided value using the passed operator for each member of the source integers.
+// Every operation is performed within the bounds of the provided type.  This means overflow and underflow
+// will occur if you cross beyond the boundaries of your provided type.  This is an intentional design for Spark.
 // NOTE: Division loses precision as we specifically only operate on integers here!
+// We constrain to integers only as the bitwise operators are not readily available on non-integer types.
 func OnEach[T constraints.Integer](data []T, operation Operator, value T) []T {
 	op := func(a, b T) T {
 		switch operation {
@@ -59,7 +62,7 @@ func OnEach[T constraints.Integer](data []T, operation Operator, value T) []T {
 	return data
 }
 
-// GetAverage calculates the average of a slice of integer values.
+// GetAverage calculates the average of a slice of integer values and returns the result in the slice's type.
 func GetAverage[T constraints.Integer](data ...T) T {
 	if len(data) == 0 {
 		return 0
@@ -69,20 +72,4 @@ func GetAverage[T constraints.Integer](data ...T) T {
 		total += uint64(v)
 	}
 	return T(total / uint64(len(data)))
-}
-
-// Max takes two integers and returns which is greater than the other.
-func Max(a, b int) int {
-	if a > b {
-		return a
-	}
-	return b
-}
-
-// Min takes two integers and returns which is smaller than the other.
-func Min(a, b int) int {
-	if a < b {
-		return a
-	}
-	return b
 }
