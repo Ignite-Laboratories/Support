@@ -1,4 +1,4 @@
-// Package constraints provides a singular point for referencing 'Numeric' types beyond Integer and Float.
+// Package constraints provides a singular point for referencing 'Numeric' types of both Integer and Float.
 package constraints
 
 import (
