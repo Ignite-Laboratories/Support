@@ -61,10 +61,11 @@ func (op Operator) String() string {
 // NOTE: Division loses precision as we specifically only operate on integers here!
 // We constrain to integers only as the bitwise operators are not readily available on non-integer types.
 func OnEach[T constraints.Integer](data []T, operation Operator, value T) []T {
+	out := make([]T, len(data))
 	for i, v := range data {
-		data[i] = Operate(v, operation, value)
+		out[i] = Operate(v, operation, value)
 	}
-	return data
+	return out
 }
 
 // Operate applies the provided operation between a and b.

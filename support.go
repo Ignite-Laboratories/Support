@@ -12,6 +12,15 @@ func RandomBytes(length int) []byte {
 	return bytes
 }
 
+// FixedBytes generates a slice of bytes, each set to the provided value.
+func FixedBytes(length int, value byte) []byte {
+	bytes := make([]byte, length)
+	for i := 0; i < length; i++ {
+		bytes[i] = value
+	}
+	return bytes
+}
+
 // Subdivide takes a generic slice and subdivides it into sub-slices up to the provided width.
 func Subdivide[T any](width int, data []T) [][]T {
 	output := make([][]T, 0, (len(data)+width-1)/width)
