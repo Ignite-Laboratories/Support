@@ -4,8 +4,10 @@ package operate
 import (
 	"fmt"
 	"github.com/ignite-laboratories/support/constraints"
-	"github.com/ignite-laboratories/tiny"
 )
+
+// Operators provides a slice of the permissible operators of this library.
+var Operators = []Operator{Add, Subtract, Multiply, Divide, XOR, AND, NAND, OR}
 
 // Operator is a type of mathematical operation to be applied to integers.
 type Operator int
@@ -29,48 +31,64 @@ const (
 	OR
 )
 
+// String provides a quick reference of what each operation performs "under the hood."
+func (op Operator) String() string {
+	switch op {
+	case Add:
+		return "a+b"
+	case Subtract:
+		return "a-b"
+	case Multiply:
+		return "a*b"
+	case Divide:
+		return "a/b"
+	case XOR:
+		return "a^b"
+	case AND:
+		return "a&b"
+	case NAND:
+		return "^(a&b)"
+	case OR:
+		return "a|b"
+	default:
+		panic(fmt.Sprintf("Invalid operation: %v", op))
+	}
+}
+
 // OnEach applies the provided value using the passed operator for each member of the source integers.
 // Every operation is performed within the bounds of the provided type.  This means overflow and underflow
 // will occur if you cross beyond the boundaries of your provided type.  This is an intentional design for Spark.
 // NOTE: Division loses precision as we specifically only operate on integers here!
 // We constrain to integers only as the bitwise operators are not readily available on non-integer types.
 func OnEach[T constraints.Integer](data []T, operation Operator, value T) []T {
-	op := func(a, b T) T {
-		switch operation {
-		case Add:
-			return a + b
-		case Subtract:
-			return a - b
-		case Multiply:
-			return a * b
-		case Divide:
-			return a * b
-		case XOR:
-			return a ^ b
-		case AND:
-			return a & b
-		case NAND:
-			return ^(a & b)
-		case OR:
-			return a | b
-		default:
-			panic(fmt.Sprintf("Invalid operation: %v", operation))
-			return 0
-		}
-	}
 	for i, v := range data {
-		data[i] = op(v, value)
+		data[i] = Operate(v, operation, value)
 	}
 	return data
 }
 
-// GetMeasurementAverage calculates the average of a slice of tiny.Measurement values and returns the result.
-func GetMeasurementAverage(data ...tiny.Measurement) int {
-	var expanded []int
-	for _, v := range data {
-		expanded = append(expanded, v.Value())
+// Operate applies the provided operation between a and b.
+func Operate[T constraints.Integer](a T, operation Operator, b T) T {
+	switch operation {
+	case Add:
+		return a + b
+	case Subtract:
+		return a - b
+	case Multiply:
+		return a * b
+	case Divide:
+		return a / b
+	case XOR:
+		return a ^ b
+	case AND:
+		return a & b
+	case NAND:
+		return ^(a & b)
+	case OR:
+		return a | b
+	default:
+		panic(fmt.Sprintf("Invalid operation: %v", operation))
 	}
-	return GetAverage(expanded...)
 }
 
 // GetAverage calculates the average of a slice of integer values and returns the result in the slice's type.
