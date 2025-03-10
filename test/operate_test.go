@@ -1,4 +1,4 @@
-package testing
+package test
 
 import (
 	"github.com/ignite-laboratories/support"
