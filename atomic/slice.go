@@ -1,83 +1,71 @@
 package atomic
 
-// Slice is a thread-safe collection of items.  Operations are performed using
-// channels to ensure they complete fully before the next operation is permitted.
+import (
+	"sync"
+	"sync/atomic"
+)
+
+// Slice is a thread-safe slice implementation.
 type Slice[T any] struct {
-	data   chan func([]T) []T
-	signal chan struct{}
+	mu        sync.RWMutex
+	atomicVal atomic.Value
+	slice     []T
 }
 
 // NewSlice creates a new instance of a Slice.
 func NewSlice[T any]() *Slice[T] {
-	as := &Slice[T]{
-		data:   make(chan func([]T) []T),
-		signal: make(chan struct{}),
-	}
-	go func() {
-		var slice []T
-		for f := range as.data {
-			slice = f(slice)
-		}
-		close(as.signal)
-	}()
+	as := &Slice[T]{}
+	as.atomicVal.Store(make([]T, 0))
 	return as
 }
 
-// Add places the provided element at the end of the slice.
-func (as *Slice[T]) Add(element T) {
-	as.data <- func(slice []T) []T {
-		return append(slice, element)
-	}
+// Add appends elements to the slice in a thread-safe manner.
+func (as *Slice[T]) Add(elements ...T) {
+	as.mu.Lock()
+	defer as.mu.Unlock()
+	current := as.atomicVal.Load().([]T)
+	newSlice := append(current, elements...)
+	as.atomicVal.Store(newSlice)
 }
 
-// RemoveIf removes an element from the slice if the provided predicate returns true.
-// If you would like to remove a specific element, you can provide an anonymous test
-// as the predicate - or you could "fuzzily" match elements with a more complex predicate.
+// RemoveIf removes elements that match the predicate in a thread-safe manner.
 func (as *Slice[T]) RemoveIf(predicate func(T) bool) {
-	as.data <- func(slice []T) []T {
-		var result []T
-		for _, v := range slice {
-			if !predicate(v) {
-				result = append(result, v)
-			}
+	as.mu.Lock()
+	defer as.mu.Unlock()
+	var result []T
+	for _, v := range as.slice {
+		if !predicate(v) {
+			result = append(result, v)
 		}
-		return result
 	}
-
+	as.slice = result
 }
 
-// Length returns the number of elements currently in the slice.
+// Length returns the number of elements in the slice.
 func (as *Slice[T]) Length() int {
-	result := make(chan int)
-	as.data <- func(slice []T) []T {
-		result <- len(slice)
-		return slice
-	}
-	return <-result
+	as.mu.RLock()
+	defer as.mu.RUnlock()
+	return len(as.slice)
 }
 
-// Get returns the element at the provided index.
+// Get returns the element at the provided index in a thread-safe manner.
 func (as *Slice[T]) Get(index int) T {
-	result := make(chan T)
-	as.data <- func(slice []T) []T {
-		result <- slice[index]
-		return slice
-	}
-	return <-result
+	as.mu.RLock()
+	defer as.mu.RUnlock()
+	return as.slice[index]
 }
 
-// All returns all elements in a copy of the current slice.
+// All returns a copy of all elements in the slice in a thread-safe manner.
 func (as *Slice[T]) All() []T {
-	result := make(chan []T)
-	as.data <- func(slice []T) []T {
-		result <- append([]T{}, slice...)
-		return slice
-	}
-	return <-result
+	return as.atomicVal.Load().([]T)
 }
 
-// Close closes all the inner channels.
-func (as *Slice[T]) Close() {
-	close(as.data)
-	<-as.signal
+// IfAny walks the slice and returns true as soon as an element satisfies the predicate.
+func (as *Slice[T]) IfAny(predicate func(T) bool) bool {
+	for _, v := range as.All() {
+		if predicate(v) {
+			return true
+		}
+	}
+	return false
 }
