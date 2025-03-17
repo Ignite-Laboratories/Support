@@ -2,12 +2,12 @@ package test
 
 import (
 	"github.com/ignite-laboratories/core/test"
-	"github.com/ignite-laboratories/support/atomic"
+	"github.com/ignite-laboratories/support/threadSafe"
 	"testing"
 )
 
-func Test_Atomic_Slice_NewSlice(t *testing.T) {
-	s := atomic.NewSlice[int]()
+func Test_ThreadSafe_Slice_NewSlice(t *testing.T) {
+	s := threadSafe.NewSlice[int]()
 	s.Add(5)
 	s.Add(7)
 	s.Add(9)
@@ -18,8 +18,8 @@ func Test_Atomic_Slice_NewSlice(t *testing.T) {
 	test.CompareSlices(r, []int{5, 7}, t)
 }
 
-func Test_Atomic_Slice_Add(t *testing.T) {
-	s := atomic.NewSlice[int]()
+func Test_ThreadSafe_Slice_Add(t *testing.T) {
+	s := threadSafe.NewSlice[int]()
 	s.Add(5)
 	s.Add(7)
 	s.Add(9)
@@ -27,8 +27,8 @@ func Test_Atomic_Slice_Add(t *testing.T) {
 	test.CompareSlices(r, []int{5, 7, 9}, t)
 }
 
-func Test_Atomic_Slice_RemoveIf(t *testing.T) {
-	s := atomic.NewSlice[int]()
+func Test_ThreadSafe_Slice_RemoveIf(t *testing.T) {
+	s := threadSafe.NewSlice[int]()
 	s.Add(5)
 	s.Add(9)
 	s.Add(7)
@@ -40,8 +40,8 @@ func Test_Atomic_Slice_RemoveIf(t *testing.T) {
 	test.CompareSlices(r, []int{5, 7}, t)
 }
 
-func Test_Atomic_Slice_RemoveIf_NoMatches(t *testing.T) {
-	s := atomic.NewSlice[int]()
+func Test_ThreadSafe_Slice_RemoveIf_NoMatches(t *testing.T) {
+	s := threadSafe.NewSlice[int]()
 	s.Add(5)
 	s.Add(9)
 	s.Add(7)
@@ -53,8 +53,8 @@ func Test_Atomic_Slice_RemoveIf_NoMatches(t *testing.T) {
 	test.CompareSlices(r, []int{5, 9, 7, 9}, t)
 }
 
-func Test_Atomic_Slice_Length(t *testing.T) {
-	s := atomic.NewSlice[int]()
+func Test_ThreadSafe_Slice_Length(t *testing.T) {
+	s := threadSafe.NewSlice[int]()
 	test.CompareValues(s.Length(), 0, t)
 	s.Add(5)
 	test.CompareValues(s.Length(), 1, t)
@@ -66,8 +66,8 @@ func Test_Atomic_Slice_Length(t *testing.T) {
 	test.CompareValues(s.Length(), 4, t)
 }
 
-func Test_Atomic_Slice_Get(t *testing.T) {
-	s := atomic.NewSlice[int]()
+func Test_ThreadSafe_Slice_Get(t *testing.T) {
+	s := threadSafe.NewSlice[int]()
 	s.Add(5)
 	s.Add(9)
 	s.Add(7)
@@ -79,8 +79,8 @@ func Test_Atomic_Slice_Get(t *testing.T) {
 	test.CompareValues(9, s.Get(3), t)
 }
 
-func Test_Atomic_Slice_All(t *testing.T) {
-	s := atomic.NewSlice[int]()
+func Test_ThreadSafe_Slice_All(t *testing.T) {
+	s := threadSafe.NewSlice[int]()
 	r := s.All()
 	test.CompareSlices(r, []int{}, t)
 

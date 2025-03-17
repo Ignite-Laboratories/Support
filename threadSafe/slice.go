@@ -1,4 +1,4 @@
-package atomic
+package threadSafe
 
 import (
 	"sync"
