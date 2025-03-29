@@ -3,7 +3,7 @@ package operate
 
 import (
 	"fmt"
-	"github.com/ignite-laboratories/support/constraints"
+	"github.com/ignite-laboratories/core"
 )
 
 // Operators provides a slice of the permissible operators of this library.
@@ -60,7 +60,7 @@ func (op Operator) String() string {
 // will occur if you cross beyond the boundaries of your provided type.  This is an intentional design for Spark.
 // NOTE: Division loses precision as we specifically only operate on integers here!
 // We constrain to integers only as the bitwise operators are not readily available on non-integer types.
-func OnEach[T constraints.Integer](data []T, operation Operator, value T) []T {
+func OnEach[T core.Integer](data []T, operation Operator, value T) []T {
 	out := make([]T, len(data))
 	for i, v := range data {
 		out[i] = Operate(v, operation, value)
@@ -69,7 +69,7 @@ func OnEach[T constraints.Integer](data []T, operation Operator, value T) []T {
 }
 
 // Operate applies the provided operation between a and b.
-func Operate[T constraints.Integer](a T, operation Operator, b T) T {
+func Operate[T core.Integer](a T, operation Operator, b T) T {
 	switch operation {
 	case Add:
 		return a + b
@@ -93,7 +93,7 @@ func Operate[T constraints.Integer](a T, operation Operator, b T) T {
 }
 
 // GetAverage calculates the average of a slice of integer values and returns the result in the slice's type.
-func GetAverage[T constraints.Integer](data ...T) T {
+func GetAverage[T core.Integer](data ...T) T {
 	if len(data) == 0 {
 		return T(0)
 	}
