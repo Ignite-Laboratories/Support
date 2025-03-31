@@ -2,8 +2,13 @@ package support
 
 import (
 	"crypto/rand"
+	"fmt"
 	"sync"
 )
+
+func init() {
+	fmt.Println("init - [support]")
+}
 
 // RandomBytes generates a slice of random bytes.
 func RandomBytes(length int) []byte {
