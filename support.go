@@ -7,7 +7,7 @@ import (
 )
 
 func init() {
-	fmt.Println("[support]")
+	fmt.Println("Module - [support]")
 }
 
 // RandomBytes generates a slice of random bytes.
